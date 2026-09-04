@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Component
@@ -31,20 +30,25 @@ public class PlayerService {
     }
     public List<Player> getPlayersByName(String name){
         return playerRepositary.findAll().stream()
-                .filter(player -> name.equals(player.getName().toLowerCase().contains(name.toLowerCase())))
+                .filter(player -> player.getName().toLowerCase().contains(name.toLowerCase()))
                 .collect(Collectors.toList());
     }
     public List<Player> getPlayerByPosition(String pos){
         return playerRepositary.findAll().stream()
-                .filter(player -> (player.getPos().toLowerCase()).contains(pos.toLowerCase()))
+                .filter(player -> player.getPos() != null && player.getPos().toLowerCase().contains(pos.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
     public List<Player> getPlayersBYNation(String Nation){
         return playerRepositary.findAll().stream()
-                .filter(player -> (player.getNation().toLowerCase().contains(Nation.toLowerCase())))
+                .filter(player -> player.getPos() != null && player.getNation().toLowerCase().contains(Nation.toLowerCase()))
                 .collect(Collectors.toList());
 
+    }
+
+    public List<Player> getPlayersByTeamAndName(String team, String name) {
+        return playerRepositary
+                .findByTeamIgnoreCaseAndNameContainingIgnoreCase(team, name);
     }
 
     public List<Player> getPlayersByTeamandPosition(String Team , String Position){
